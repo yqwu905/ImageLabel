@@ -7,10 +7,12 @@ using namespace std::string_view_literals;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
   ui->setupUi(this);
-  this->update_dir_label();
+  this->update_dir_button();
   this->load_img_to_label();
   this->load_config();
   this->labels = QStringList();
+  QObject::connect(ui->dir_button, &QPushButton::released, this,
+          [this] { this->select_dir(); });
   QCoreApplication::setOrganizationName("pingline");
   QCoreApplication::setOrganizationDomain("yqwu.site");
   QCoreApplication::setApplicationName("Image Label");
@@ -28,7 +30,7 @@ void MainWindow::add_label_button(QString label, QString shortcut) {
   QShortcut *shortcut_slot = new QShortcut(QKeySequence(shortcut), this);
   QObject::connect(shortcut_slot, SIGNAL(activated()), button,
                    SLOT(animateClick()));
-  connect(button, &QPushButton::released, this,
+  QObject::connect(button, &QPushButton::released, this,
           [this, shortcut] { handleButton(shortcut); });
 }
 
@@ -74,7 +76,7 @@ void MainWindow::select_dir() {
     qDebug() << "Change directory from " << this->dir.absolutePath() << " to "
              << selected_dir;
     this->dir.setPath(selected_dir);
-    this->update_dir_label();
+    this->update_dir_button();
     this->imgs = get_img_filename_in_dir(this->dir);
     this->img_idx = 0;
     this->labels = QStringList();
@@ -87,8 +89,8 @@ void MainWindow::select_dir() {
       this->dir.filePath(settings.value("BaseDir").toString())));
 }
 
-void MainWindow::update_dir_label() {
-  ui->dir_label->setText(QString("%1").arg(this->dir.absolutePath()));
+void MainWindow::update_dir_button() {
+  ui->dir_button->setText(QString("%1").arg(this->dir.absolutePath()));
 }
 
 void MainWindow::load_img_to_label() {
@@ -127,6 +129,7 @@ void MainWindow::load_config() {
   }
   this->dest.setPath(QDir::cleanPath(
       this->dir.filePath(settings.value("BaseDir").toString())));
+  qDebug() << "Setting file:" << settings.fileName();
 }
 
 void MainWindow::remove_all_button() {

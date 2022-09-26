@@ -34,7 +34,7 @@ public:
   QDir dest;
   void move_img_to(QString src, QString label);
   void select_dir();
-  void update_dir_label();
+  void update_dir_button();
   void load_img_to_label();
   void load_config();
   void add_label_button(QString label, QString shortcut);
