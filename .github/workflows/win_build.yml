@@ -1,0 +1,23 @@
+name: Build Windows Binaray
+on: push
+jobs:
+  Build-Windows-Binaray:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: '6.3.2'
+          host: 'windows'
+          target: 'desktop'
+          arch: 'win64_msvc2019_64'
+          install-deps: 'true'
+      - use: actions/checkout@v3
+      - name: Build
+        run: |
+          mkdir build
+          cd build
+          cmake -G Ninja ..
+          ninja
+
+
