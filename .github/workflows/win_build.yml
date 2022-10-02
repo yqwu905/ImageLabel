@@ -12,11 +12,13 @@ jobs:
           target: 'desktop'
           arch: 'win64_msvc2019_64'
           install-deps: 'true'
+          tools: 'windows desktop tools_ninja'
       - uses: actions/checkout@v3
       - name: Build
         run: |
           mkdir build
           ls
           cd build
-          cmake ..
-          make ImageLabel
+          cmake -G Ninja ..
+          ls
+          ninja
