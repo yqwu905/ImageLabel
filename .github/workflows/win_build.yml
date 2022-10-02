@@ -2,7 +2,7 @@ name: Build Windows Binaray
 on: push
 jobs:
   Build-Windows-Binaray:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - name: Install Qt
         uses: jurplel/install-qt-action@v3
@@ -17,7 +17,7 @@ jobs:
         run: |
           mkdir build
           cd build
-          cmake -G Ninja ..
-          ninja
+          cmake ..
+          make -j
 
 
