@@ -19,6 +19,6 @@ jobs:
           mkdir build
           ls
           cd build
-          cmake -G Ninja ..
+          cmake -G Ninja -D CMAKE_CXX_COMPILER=cl.exe ..
           ls
           ninja
