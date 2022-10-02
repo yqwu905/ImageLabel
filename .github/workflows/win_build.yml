@@ -19,6 +19,6 @@ jobs:
           mkdir build
           ls
           cd build
-          cmake -G Ninja -D CMAKE_CXX_COMPILER=cl.exe ..
+          cmake -G Ninja -D CMAKE_CXX_COMPILER=C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Tools/MSVC/14.33.31629/bin/Hostx64/x64/cl.exe ..
           ls
           ninja
