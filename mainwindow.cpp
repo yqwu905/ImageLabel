@@ -12,10 +12,14 @@ MainWindow::MainWindow(QWidget *parent)
   this->load_config();
   this->labels = QStringList();
   QObject::connect(ui->dir_button, &QPushButton::released, this,
-          [this] { this->select_dir(); });
+                   [this] { this->select_dir(); });
   QCoreApplication::setOrganizationName("pingline");
   QCoreApplication::setOrganizationDomain("yqwu.site");
   QCoreApplication::setApplicationName("Image Label");
+  QObject::connect(ui->actionEdit_setting, &QAction::triggered, this,
+                   &MainWindow::edit_setting);
+  QObject::connect(ui->actionRestore_default_setting, &QAction::triggered, this,
+                   &MainWindow::restore_default_setting);
 }
 
 MainWindow::~MainWindow() { delete ui; }
@@ -31,7 +35,7 @@ void MainWindow::add_label_button(QString label, QString shortcut) {
   QObject::connect(shortcut_slot, SIGNAL(activated()), button,
                    SLOT(animateClick()));
   QObject::connect(button, &QPushButton::released, this,
-          [this, shortcut] { handleButton(shortcut); });
+                   [this, shortcut] { handleButton(shortcut); });
 }
 
 void MainWindow::handleButton(QString shortcut) {
@@ -177,7 +181,7 @@ void MainWindow::rm_img(QString src) {
 
 void MainWindow::prev_img() {
   qDebug("Previouse Image");
-  if (this->img_idx==0) {
+  if (this->img_idx == 0) {
     qDebug("At head, cannot goto previous.");
     return;
   }
@@ -210,8 +214,25 @@ void MainWindow::next_img() {
 void MainWindow::set_labels(int idx, QString label) {
   if (this->labels.size() > idx) {
     this->labels[idx] = label;
+  } else {
+    this->labels.append(label);
+  }
+}
+
+void MainWindow::edit_setting() {
+  QSettings settings;
+  QDesktopServices::openUrl(
+      QUrl(QString("file://%1").arg(settings.fileName()), QUrl::TolerantMode));
+}
+
+void MainWindow::restore_default_setting() { QSettings settings;
+  QFile old_settings_file(settings.fileName());
+  if (old_settings_file.remove())
+  {
+    qDebug("Successfully delete settings file.");
+    this->load_config();
   }
   else {
-    this->labels.append(label);
+    qDebug("Failed to delete settings file.");
   }
 }

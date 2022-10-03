@@ -2,7 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QDebug>
+#include <QDesktopServices>
 #include <QDir>
+#include <QFile>
 #include <QFileDialog>
 #include <QMainWindow>
 #include <QObject>
@@ -44,6 +46,8 @@ public:
   void prev_img();
   void next_img();
   void set_labels(int idx, QString label);
+  void restore_default_setting();
+  void edit_setting();
   ~MainWindow();
 
 private slots:
