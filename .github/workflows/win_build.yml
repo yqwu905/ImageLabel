@@ -29,8 +29,10 @@ jobs:
           mv ImageLabel.exe output
           cd output
           windeployqt ImageLabel.exe
+      - name: Archive
+        run: Compress-Archive .\build\output\* -DestinationPath ./ImageLabel_win_x86_64.zip -CompressionLevel Optimal
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          files: build/output/*
+          files: ImageLabel_win_x86_64.zip
           tag_name: ${{ github.run_number }}
