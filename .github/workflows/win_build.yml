@@ -24,3 +24,15 @@ jobs:
           ls
           ninja
         shell: cmd
+      - name: Deploy
+        run: |
+          pwd
+          cd build
+          mkdir output
+          mv ImageLabel.exe output
+          cd output
+          windeployqt ImageLabel.exe
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: build/output/*
