@@ -16,6 +16,7 @@
 #include <QString>
 #include <QStringList>
 #include <iostream>
+#include <qtextbrowser.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -28,6 +29,7 @@ class MainWindow : public QMainWindow {
 
 public:
   MainWindow(QWidget *parent = nullptr);
+  static QTextBrowser *s_textBrowser;
   QDir dir = QDir::home();
   QStringList get_img_filename_in_dir(QDir dir);
   int img_idx = 0;
@@ -48,6 +50,9 @@ public:
   void set_labels(int idx, QString label);
   void restore_default_setting();
   void edit_setting();
+  static void debug_msg_output(QtMsgType type,
+                               const QMessageLogContext &context,
+                               const QString &msg);
   ~MainWindow();
 
 private slots:

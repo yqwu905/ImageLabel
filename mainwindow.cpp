@@ -4,18 +4,21 @@
 
 using namespace std::string_view_literals;
 
+QTextBrowser *MainWindow::s_textBrowser = 0;
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
   ui->setupUi(this);
   this->update_dir_button();
   this->load_img_to_label();
-  this->load_config();
   this->labels = QStringList();
   QObject::connect(ui->dir_button, &QPushButton::released, this,
                    [this] { this->select_dir(); });
   QCoreApplication::setOrganizationName("pingline");
   QCoreApplication::setOrganizationDomain("yqwu.site");
   QCoreApplication::setApplicationName("Image Label");
+  s_textBrowser = new QTextBrowser;
+  ui->gridLayout->layout()->addWidget(s_textBrowser);
   QObject::connect(ui->actionEdit_setting, &QAction::triggered, this,
                    &MainWindow::edit_setting);
   QObject::connect(ui->actionRestore_default_setting, &QAction::triggered, this,
@@ -225,14 +228,36 @@ void MainWindow::edit_setting() {
       QUrl(QString("file://%1").arg(settings.fileName()), QUrl::TolerantMode));
 }
 
-void MainWindow::restore_default_setting() { QSettings settings;
+void MainWindow::restore_default_setting() {
+  QSettings settings;
   QFile old_settings_file(settings.fileName());
-  if (old_settings_file.remove())
-  {
+  if (old_settings_file.remove()) {
     qDebug("Successfully delete settings file.");
     this->load_config();
-  }
-  else {
+  } else {
     qDebug("Failed to delete settings file.");
+  }
+}
+
+void MainWindow::debug_msg_output(QtMsgType type,
+                                  const QMessageLogContext &context,
+                                  const QString &msg) {
+  QByteArray localMsg = msg.toLocal8Bit();
+  switch (type) {
+  case QtDebugMsg:
+    s_textBrowser->append(QString("Debug: %1\n").arg(localMsg.constData()));
+    break;
+  case QtInfoMsg:
+    s_textBrowser->append(QString("Info: %1\n").arg(localMsg.constData()));
+    break;
+  case QtWarningMsg:
+    s_textBrowser->append(QString("Warning: %1\n").arg(localMsg.constData()));
+    break;
+  case QtCriticalMsg:
+    s_textBrowser->append(QString("Critical: %1\n").arg(localMsg.constData()));
+    break;
+  case QtFatalMsg:
+    s_textBrowser->append(QString("Fatal: %1\n").arg(localMsg.constData()));
+    abort();
   }
 }
